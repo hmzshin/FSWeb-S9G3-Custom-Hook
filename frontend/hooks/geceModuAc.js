@@ -1,29 +1,23 @@
 import React from "react";
 import { useState } from "react";
+import useLocalStorageKullan from "./localStorageKullan";
 
-const useGeceModuAc = (key, initialValue) => {
-  const [theme, setTheme] = useState(() => {
-    const localTheme = localStorage.getItem("theme");
-
-    if (initialValue) {
-      return initialValue;
-    }
-
-    if (localTheme) {
-      return JSON.parse(localTheme);
-    } else {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? true
-        : false;
-    }
-  });
+const useGeceModuAc = (initialValue) => {
+  const isLocalDarkTheme = window.matchMedia("(prefers-color-scheme: dark)")
+    .matches
+    ? true
+    : false;
+  const [geceModu, setGeceModu] = useLocalStorageKullan(
+    "geceModu",
+    initialValue ? initialValue : isLocalDarkTheme
+  );
 
   const changeHandler = (val) => {
-    setTheme(val);
-    localStorage.setItem(key, JSON.stringify(val));
+    setGeceModu(val);
+    localStorage.setItem("geceModu", JSON.stringify(val));
   };
 
-  return [theme, changeHandler];
+  return [geceModu, changeHandler];
 };
 
 export default useGeceModuAc;
